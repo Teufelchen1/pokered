@@ -94,6 +94,7 @@ GainExperience:
 	ld a, [H_QUOTIENT + 3]
 	ld [wExpAmountGained + 1], a
 	add b
+	add b
 	ld [hld], a
 	ld b, [hl]
 	ld a, [H_QUOTIENT + 2]

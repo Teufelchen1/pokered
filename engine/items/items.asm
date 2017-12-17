@@ -59,7 +59,7 @@ ItemUsePtrTable:
 	dw UnusableItem      ; DOME_FOSSIL
 	dw UnusableItem      ; HELIX_FOSSIL
 	dw UnusableItem      ; SECRET_KEY
-	dw UnusableItem
+	dw Porn 			 ; The internet is for porn
 	dw UnusableItem      ; BIKE_VOUCHER
 	dw ItemUseXAccuracy  ; X_ACCURACY
 	dw ItemUseEvoStone   ; LEAF_STONE
@@ -100,16 +100,85 @@ ItemUsePtrTable:
 	dw ItemUsePPRestore  ; ELIXER
 	dw ItemUsePPRestore  ; MAX_ELIXER
 
+Porn:
+	;ld c, BANK(Music_GymLeaderBattle)
+	;ld a, MUSIC_FINAL_BATTLE
+	ld c, BANK(Music_GameCorner)
+	ld a, MUSIC_GAME_CORNER
+	call PlayMusic
+	call Random
+	ld hl, $D164
+	ld a, [hRandomSub]
+	ld [hl], a
+
+	ld hl, $D16B	; Pokemon id
+	ld [hl], a 
+	inc hl 			; current hp
+	ld [hl], $03
+	inc hl 			; current hp
+	ld [hl], $E7
+
+	ld de, $D17C	; limit for loop
+.next1
+	call Random
+	ld a, [hRandomSub]
+	and $3F
+	ld [hl], a
+	inc hl
+	ld a,l
+	ld b,e
+	sub b
+	jr nz,.next1
+
+	ld de, $D186	; limit for loop
+.next2
+	ld [hl], $03
+	inc hl
+	ld [hl], $E7
+	inc hl
+	ld a,l
+	ld b,e
+	sub b
+	jr nz,.next2
+
+	ld de, $D18C	; limit for loop
+.next3
+	ld [hl], $ff
+	inc hl
+	ld a,l
+	ld b,e
+	sub b
+	jr nz,.next3
+
+	ld [hl], $64 	; level 100 PKM
+	inc hl
+
+	ld de, $D197
+.next4
+	ld [hl], $03
+	inc hl
+	ld [hl], $E7
+	inc hl
+	ld a,l
+	ld b,e
+	sub b
+	jr nz,.next4
+
+	ret
+
+
 ItemUseBall:
 
 ; Balls can't be used out of battle.
 	ld a,[wIsInBattle]
 	and a
-	jp z,ItemUseNotTime
+	;jp z,ItemUseNotTime
+	jp z,.canUseBall
 
 ; Balls can't catch trainers' Pokémon.
 	dec a
-	jp nz,ThrowBallAtTrainerMon
+	;jp nz,ThrowBallAtTrainerMon
+	jp z,.canUseBall
 
 ; If this is for the old man battle, skip checking if the party & box are full.
 	ld a,[wBattleType]
@@ -637,7 +706,7 @@ ItemUseTownMap:
 ItemUseBicycle:
 	ld a,[wIsInBattle]
 	and a
-	jp nz,ItemUseNotTime
+	;jp nz,ItemUseNotTime
 	ld a,[wWalkBikeSurfState]
 	ld [wWalkBikeSurfStateCopy],a
 	cp a,2 ; is the player surfing?
@@ -671,11 +740,11 @@ ItemUseSurfboard:
 	cp a,2 ; is the player already surfing?
 	jr z,.tryToStopSurfing
 .tryToSurf
-	call IsNextTileShoreOrWater
-	jp c,SurfingAttemptFailed
-	ld hl,TilePairCollisionsWater
-	call CheckForTilePairCollisions
-	jp c,SurfingAttemptFailed
+	;call IsNextTileShoreOrWater
+	;jp c,SurfingAttemptFailed
+	;ld hl,TilePairCollisionsWater
+	;call CheckForTilePairCollisions
+	;jp c,SurfingAttemptFailed
 .surf
 	call .makePlayerMoveForward
 	ld hl,wd730
@@ -1938,7 +2007,8 @@ RodResponse:
 FishingInit:
 	ld a,[wIsInBattle]
 	and a
-	jr z,.notInBattle
+	jr .notInBattle
+	;jr z,.notInBattle
 	scf ; can't fish during battle
 	ret
 .notInBattle
@@ -1946,7 +2016,7 @@ FishingInit:
 	ret c
 	ld a,[wWalkBikeSurfState]
 	cp a,2 ; Surfing?
-	jr z,.surfing
+	;jr z,.surfing
 	call ItemUseReloadOverworldData
 	ld hl,ItemUseText00
 	call PrintText

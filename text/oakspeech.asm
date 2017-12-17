@@ -12,17 +12,17 @@ _OakSpeechText2A::
 	text "This world is"
 	line "inhabited by"
 	cont "creatures called"
-	cont "#MON!@@"
+	cont "Dicks!@@"
 
 _OakSpeechText2B::
 	text $51,"For some people,"
-	line "#MON are"
+	line "Dicks are"
 	cont "pets. Others use"
 	cont "them for fights."
 
 	para "Myself..."
 
-	para "I study #MON"
+	para "I study Dicks"
 	line "as a profession."
 	prompt
 

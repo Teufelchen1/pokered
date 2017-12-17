@@ -4035,8 +4035,8 @@ CheckForDisobedience:
 	xor a
 	ld [wMonIsDisobedient], a
 	ld a, [wLinkState]
-	cp LINK_STATE_BATTLING
-	jr nz, .checkIfMonIsTraded
+	;cp LINK_STATE_BATTLING
+	;jr nz, .checkIfMonIsTraded
 	ld a, $1
 	and a
 	ret

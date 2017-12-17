@@ -259,7 +259,7 @@ BuildFlyLocationsList:
 	srl d
 	rr e
 	ld a, $fe ; store $fe if the town hasn't been visited
-	jr nc, .notVisited
+	;jr nc, .notVisited
 	ld a, b ; store the map number of the town if it has been visited
 .notVisited
 	ld [hl], a
