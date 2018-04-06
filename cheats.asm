@@ -9,7 +9,7 @@ CheatAddMoney:
 	ret
 
 HexEdit:
-	ld de, wPlayerName
+	ld de, $0000
 	ld a, d
 	ld [wPlayerHex], a
 	ld a, e
