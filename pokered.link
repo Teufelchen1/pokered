@@ -4,6 +4,7 @@ ROM0
   ORG $150
   "Main"
 
+
 ROMX $1
   "bank1"
 
@@ -155,6 +156,9 @@ ROMX $2B
 
 ROMX $2C
   "Move Names" ; MOVE_NAMES
+
+ROMX $2D
+  "Cheats" ; Cheats
 
 WRAM0
   "WRAM Bank 0"

@@ -2313,7 +2313,6 @@ wSavedNPCMovementDirections2Index:: ; d157
 wPlayerName:: ; d158
 	ds NAME_LENGTH
 
-
 wPartyDataStart::
 
 wPartyCount::   ds 1 ; d163
@@ -3222,6 +3221,12 @@ wBoxMonNicks:: ds NAME_LENGTH * MONS_PER_BOX ; de06
 wBoxMonNicksEnd:: ; dee2
 
 wBoxDataEnd::
+
+wPlayerHex::
+	ds 2
+
+wPlayerHexStr::
+	ds 5
 
 
 SECTION "Stack", WRAMX[$df00], BANK[1]

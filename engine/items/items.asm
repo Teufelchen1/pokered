@@ -19,7 +19,7 @@ ItemUsePtrTable:
 	dw ItemUseBall       ; MASTER_BALL
 	dw ItemUseBall       ; ULTRA_BALL
 	dw ItemUseBall       ; GREAT_BALL
-	dw ItemUseBall       ; POKE_BALL
+	dw ItemUseVitamin       ; POKE_BALL
 	dw ItemUseTownMap    ; TOWN_MAP
 	dw ItemUseBicycle    ; BICYCLE
 	dw ItemUseSurfboard  ; out-of-battle Surf effect
@@ -101,71 +101,107 @@ ItemUsePtrTable:
 	dw ItemUsePPRestore  ; MAX_ELIXER
 
 Porn:
-	;ld c, BANK(Music_GymLeaderBattle)
-	;ld a, MUSIC_FINAL_BATTLE
-	ld c, BANK(Music_GameCorner)
-	ld a, MUSIC_GAME_CORNER
-	call PlayMusic
-	call Random
-	ld hl, $D164
-	ld a, [hRandomSub]
-	ld [hl], a
+	ld a, 6 				; This makes that the curser can only access 4 postions(starts with zero)
+	ld [wMaxMenuItem], a
 
-	ld hl, $D16B	; Pokemon id
-	ld [hl], a 
-	inc hl 			; current hp
-	ld [hl], $03
-	inc hl 			; current hp
-	ld [hl], $E7
+	ld a, 2 				; Where the curser starts, notice: Its absolute, not relative to the window
+	ld [wTopMenuItemY], a
 
-	ld de, $D17C	; limit for loop
-.next1
-	call Random
-	ld a, [hRandomSub]
-	and $3F
-	ld [hl], a
-	inc hl
-	ld a,l
-	ld b,e
-	sub b
-	jr nz,.next1
+	ld a, 2 				; Where the curser starts, notice: Its absolute, not relative to the window
+	ld [wTopMenuItemX], a
 
-	ld de, $D186	; limit for loop
-.next2
-	ld [hl], $03
-	inc hl
-	ld [hl], $E7
-	inc hl
-	ld a,l
-	ld b,e
-	sub b
-	jr nz,.next2
-
-	ld de, $D18C	; limit for loop
-.next3
-	ld [hl], $ff
-	inc hl
-	ld a,l
-	ld b,e
-	sub b
-	jr nz,.next3
-
-	ld [hl], $64 	; level 100 PKM
-	inc hl
-
-	ld de, $D197
-.next4
-	ld [hl], $03
-	inc hl
-	ld [hl], $E7
-	inc hl
-	ld a,l
-	ld b,e
-	sub b
-	jr nz,.next4
-
+	coord hl, 1, 1			; position of the window, X,Y
+	ld b, 14				; sizeY(vertical)
+	ld c, 16				; sizeX(horizontal)
+	call TextBoxBorder		; Draws the border of the text box
+	call UpdateSprites 		; ???
+	coord hl, 3, 2			; position of the text, X,Y
+	ld de, PornText 		; loads the address of the text into de
+	call PlaceString		; puts the text from de onto screen
+.nothing2
+.nothing3
+.nothing4
+.nothing5
+	call HandleMenuInput	; Moves curser, waits for either B or A press
+	bit 1, a 				; pressed B?
+	jr nz, .noPorn
+	ld a, [wCurrentMenuItem]
+	cp 6					; chose Cancel?
+	jr z, .noPorn
+	cp 0
+	jp z, CheatMoney
+	cp 1
+	jp z, CheatHexEdit
+	cp 2
+	jr z, .nothing2
+	cp 3
+	jr z, .nothing3
+	cp 4
+	jr z, .nothing4
+	cp 5
+	jr z, .nothing5
+.noPorn
 	ret
 
+PornText:
+	db 	 "Cheat Poke-¥"
+	next "View HEX/RAM"
+	next "Nothing 2"
+	next "Nothing 3"
+	next "Nothing 4"
+	next "Nothing 5"
+	next "Cancle" ;6
+	next "@"	;marks the end of text
+
+
+CheatMoney:
+	ld a, MONEY_BOX
+	ld [wTextBoxID], a
+	call DisplayTextBoxID
+
+	ld a, 1 				; This makes that the curser can only access 4 postions(starts with zero)
+	ld [wMaxMenuItem], a
+
+	ld a, 2 				; Where the curser starts, notice: Its absolute, not relative to the window
+	ld [wTopMenuItemY], a
+
+	ld a, 2 				; Where the curser starts, notice: Its absolute, not relative to the window
+	ld [wTopMenuItemX], a
+
+	coord hl, 1, 1			; position of the window, X,Y
+	ld b, 4					; sizeY(vertical)
+	ld c, 11				; sizeX(horizontal)
+	call TextBoxBorder		; Draws the border of the text box
+	call UpdateSprites 		; ???
+	coord hl, 3, 2			; position of the text, X,Y
+	ld de, CheatMoneyText 	; loads the address of the text into de
+	call PlaceString		; puts the text from de onto screen
+	call HandleMenuInput	; Moves curser, waits for either B or A press
+	bit 1, a 				; pressed B?
+	jr nz, .abort			; then abort
+	ld a, [wCurrentMenuItem]; load current menu number
+	cp 1					; is it cancle?
+	jr z,.abort 			; then abort
+	ld b, $2D				; switch to cheat bank
+	ld hl, CheatAddMoney
+	call Bankswitch			; 
+	ld a, SFX_GET_ITEM_2
+	call PlaySoundWaitForCurrent
+	call WaitForSoundToFinish
+.abort						; chose Cancel?
+	ret
+
+CheatMoneyText:
+	db 	 "cheat ¥"
+	next "Cancle"
+	next "@"
+
+
+CheatHexEdit:
+	ld hl, HexEdit
+	ld b, $2D
+	call Bankswitch
+	ret
 
 ItemUseBall:
 
@@ -738,7 +774,7 @@ ItemUseSurfboard:
 	ld a,[wWalkBikeSurfState]
 	ld [wWalkBikeSurfStateCopy],a
 	cp a,2 ; is the player already surfing?
-	jr z,.tryToStopSurfing
+	;jr z,.tryToStopSurfing
 .tryToSurf
 	;call IsNextTileShoreOrWater
 	;jp c,SurfingAttemptFailed

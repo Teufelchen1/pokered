@@ -422,13 +422,13 @@ SlotMachine_CheckForMatches:
 .foundMatch
 	ld a, [wSlotMachineFlags]
 	and $c0
-	jr z, .rollWheel3DownByOneSymbol ; roll wheel if player isn't allowed to win
+	;jr z, .rollWheel3DownByOneSymbol ; roll wheel if player isn't allowed to win
 	and $80
 	jr nz, .acceptMatch
 ; if 7/bar matches aren't enabled and the match was a 7/bar symbol, roll wheel
 	ld a, [hl]
 	cp (SLOTSBAR >> 8) + 1
-	jr c, .rollWheel3DownByOneSymbol
+	;jr c, .rollWheel3DownByOneSymbol
 .acceptMatch
 	ld a, [hl]
 	sub $2
@@ -523,12 +523,15 @@ NotThisTimeText:
 
 ; compares the slot machine tiles at bc, de, and hl
 SlotMachine_CheckForMatch:
-	ld a, [de]
-	cp [hl]
-	ret nz
-	ld a, [bc]
-	cp [hl]
+	ld a, $33
+	cp $33
 	ret
+	;ld a, [de]
+	;cp [hl]
+	;ret nz
+	;ld a, [bc]
+	;cp [hl]
+	;ret
 
 SlotMachine_GetWheel3Tiles:
 	ld de, wSlotMachineWheel3BottomTile

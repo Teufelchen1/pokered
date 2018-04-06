@@ -82,8 +82,6 @@ INCLUDE "engine/battle/moveEffects/drain_hp_effect.asm"
 
 INCLUDE "engine/menu/players_pc.asm"
 
-INCLUDE "engine/menu/porn.asm"
-
 INCLUDE "engine/remove_pokemon.asm"
 
 INCLUDE "engine/display_pokedex.asm"
@@ -2096,3 +2094,6 @@ INCLUDE "engine/evolution.asm"
 INCLUDE "engine/overworld/elevator.asm"
 
 INCLUDE "engine/items/tm_prices.asm"
+
+SECTION "Cheats", ROMX, BANK[$2D]
+INCLUDE "cheats.asm"

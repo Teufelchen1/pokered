@@ -110,6 +110,8 @@ endm
 	dict $5F, Char5F ; dex
 	dict $59, Char59 ; TARGET
 	dict $5A, Char5A ; USER
+	dict $4D, Char4D ; Print One Byte in HEX
+	dict $60, Char60 ; Print Addr
 
 	ld [hli],a
 	call PrintLetterDelay
@@ -128,6 +130,22 @@ Char00::
 Char00Text:: ; “%d ERROR.”
 	TX_FAR _Char00Text
 	db "@"
+
+Char4D:: ;Show Hex value
+	push de
+	;ld hl, CheatInsertHex
+	;ld b, $2D
+	;call Bankswitch
+	call CheatInsertHex
+	ld de, wPlayerHexStr
+	jp FinishDTE
+
+Char60:: ; Print Address
+	push de
+	call CheatInsertAddr
+	ld de, wPlayerHexStr
+	jp FinishDTE
+
 
 Char52:: ; player’s name
 	push de

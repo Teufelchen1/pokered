@@ -155,6 +155,9 @@ charmap "#", $54
 ;charmap "POKé", $54
 charmap "<TARGET>", $59
 charmap "<USER>", $5A
+charmap "<HEX>", $4D
+charmap "<ADR>", $60
+
 charmap "′", $71
 charmap "″", $73
 charmap "№", $74
